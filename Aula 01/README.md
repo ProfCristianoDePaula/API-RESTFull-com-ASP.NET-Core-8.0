@@ -11,4 +11,4 @@
 <p>✅ Publicar API no Servidor de Hospedagem</p>
 <br />
 ## <b>🌐 Links Úteis<b>
-🔗 <a href="https://freeasphosting.net/">Free ASP Hosting</a><br />
+🔗 <a href="https://freeasphosting.net/">Free ASP Hosting - https://freeasphosting.net/</a><br />
