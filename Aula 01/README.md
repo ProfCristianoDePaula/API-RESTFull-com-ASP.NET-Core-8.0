@@ -1,8 +1,8 @@
 
 <div>
-	<h1>Prof. Cristiano de Paula</h1>
+	<h1>Prof. Cristiano de Paula
 	<br>
-	<h2>Aula 01 - Introdução a Criação de API's</h2>
+	Aula 01 - Introdução a Criação de API's</h1>
 </div>
 
 <h2>Conteúdo da Aula</h2>
