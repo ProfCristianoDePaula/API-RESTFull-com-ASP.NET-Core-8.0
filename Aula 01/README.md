@@ -6,4 +6,5 @@
 
 <p>✅ Definição de API RESTFull</p>
 <p>✅ Iniciar um Projeto API RESTFull ASP.NET Core 8.0</p>
+<p>✅ Criar Conta no Servidor https://freeasphosting.net/</p>
 <p>✅ Publicar API no Servidor de Hospedagem</p>
