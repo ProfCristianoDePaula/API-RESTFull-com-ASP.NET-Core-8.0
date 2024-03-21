@@ -1,7 +1,7 @@
 
 # Prof. Cristiano de Paula
-## Aula 01 - Introdução a Criação de API's
-### Prof. Cristiano de Paula
+Aula 01 - Introdução a Criação de API's
+
 ### Nesta aula vamos aprender a criar uma API RESTFull utilizando o ASP.NET Core 8.0 e publicar a API em um servidor de hospedagem gratuito.
 
 ## Conteúdo da Aula
