@@ -1,10 +1,9 @@
 
-<div>
-	<h1>Prof. Cristiano de Paula
-	<br>
-	<br>
-	Aula 01 - Introdução a Criação de API's</h1>
-</div>
+
+<h1 class="text-center">Aula 01 - Introdução a Criação de API's</h1>
+<p class="text-justify">Nesta aula vamos aprender a criar uma API RESTFull utilizando o ASP.NET Core 8.0 e publicar a API em um servidor de hospedagem gratuito.</p>
+
+
 
 <h2>Conteúdo da Aula</h2>
 <ul>
