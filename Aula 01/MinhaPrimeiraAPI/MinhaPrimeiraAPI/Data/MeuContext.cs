@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace MinhaPrimeiraAPI.Data
 {
@@ -8,6 +9,7 @@ namespace MinhaPrimeiraAPI.Data
         {
         }
 
+        public DbSet<IdentityUser> IdentityUser { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
