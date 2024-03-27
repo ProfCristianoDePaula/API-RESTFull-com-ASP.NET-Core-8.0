@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Adicionando Contexto
-builder.Services.AddDbContext<MeuContext>(
+builder.Services.AddDbContext<MyContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     );
 
@@ -33,7 +33,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequiredLength = 6;
     options.User.RequireUniqueEmail = true;
 })
-    .AddEntityFrameworkStores<MeuContext>()
+    .AddEntityFrameworkStores<MyContext>()
     .AddDefaultTokenProviders();
 
 //

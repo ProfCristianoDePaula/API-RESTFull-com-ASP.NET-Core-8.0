@@ -10,7 +10,7 @@ using MinhaPrimeiraAPI.Data;
 
 namespace MinhaPrimeiraAPI.Migrations
 {
-    [DbContext(typeof(MeuContext))]
+    [DbContext(typeof(MyContext))]
     partial class MeuContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

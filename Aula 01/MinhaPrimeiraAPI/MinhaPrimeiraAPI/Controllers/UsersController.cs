@@ -8,11 +8,11 @@ namespace MinhaPrimeiraAPI.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly MeuContext _context;
+        private readonly MyContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
 
-        public UsersController(MeuContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public UsersController(MyContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
             _userManager = userManager;

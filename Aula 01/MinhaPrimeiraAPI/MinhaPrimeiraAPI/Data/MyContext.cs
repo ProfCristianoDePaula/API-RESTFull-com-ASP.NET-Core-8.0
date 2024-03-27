@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MinhaPrimeiraAPI.Data
 {
-    public class MeuContext : DbContext
+    public class MyContext : DbContext
     {
-        public MeuContext(DbContextOptions<MeuContext> options) : base(options) { }
+        public MyContext(DbContextOptions<MyContext> options) : base(options) { }
         public DbSet<IdentityUser> IdentityUser { get; set; }
         public DbSet<IdentityRole> IdentityRole { get; set; }
         public DbSet<IdentityUserRole<string>> IdentityUserRole { get; set; }
