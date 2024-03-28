@@ -253,7 +253,7 @@ namespace MinhaPrimeiraAPI.Controllers
                     {
                         ModelState.AddModelError("", error.Description);
                     }
-                    return BadRequest(ModelState);
+                    return BadRequest(ModelState.ToList());
                 }
             }
             return NotFound();
