@@ -8,7 +8,7 @@ namespace MinhaPrimeiraAPI.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly MyContext _context;
+        private readonly MeuContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -18,7 +18,7 @@ namespace MinhaPrimeiraAPI.Controllers
         private IUserStore<IdentityUser> _userStore;
         private IUserEmailStore<IdentityUser> _emailStore;
 
-        public UsersController(MyContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public UsersController(MeuContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
             _userManager = userManager;

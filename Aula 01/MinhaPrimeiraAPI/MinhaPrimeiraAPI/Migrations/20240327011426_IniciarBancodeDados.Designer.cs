@@ -11,7 +11,7 @@ using MinhaPrimeiraAPI.Data;
 
 namespace MinhaPrimeiraAPI.Migrations
 {
-    [DbContext(typeof(MyContext))]
+    [DbContext(typeof(MeuContext))]
     [Migration("20240327011426_IniciarBancodeDados")]
     partial class IniciarBancodeDados
     {
