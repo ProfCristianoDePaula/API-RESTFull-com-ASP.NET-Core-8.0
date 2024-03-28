@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MinhaPrimeiraAPI.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace MinhaPrimeiraAPI.Controllers
 {
@@ -229,6 +230,12 @@ namespace MinhaPrimeiraAPI.Controllers
                 {
                     return BadRequest("Role is required");
                 }
+
+                if (email == null || !new EmailAddressAttribute().IsValid(email))
+                {
+                    return BadRequest("Invalid email");
+                }
+
                 var roleExists = await _context.IdentityRole.AnyAsync(r => r.NormalizedName == role.Trim().ToUpper());
                 if (!roleExists)
                 {
@@ -249,14 +256,201 @@ namespace MinhaPrimeiraAPI.Controllers
                 }
                 if (result.Errors != null)
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                    return BadRequest(ModelState.ToList());
+                    return BadRequest("User not created");
                 }
             }
             return NotFound();
+        }
+
+        // PUT: api/user/changeState/id
+        [HttpPut("api/user/changeState/{id}")]
+        public async Task<ActionResult<IdentityUser>> UnlockedUser(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("User Id is required"); // 400
+            }
+            try
+            {
+                var user = await _context.IdentityUser.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound(); // 404
+                }
+                user.LockoutEnabled = !(user.LockoutEnabled);
+                user.LockoutEnd = null;
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(user); // 200
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); // 400
+            }
+        }
+
+        // PUT: api/user/resetPassword/id
+        [HttpPut("api/user/resetPassword/{id}")]
+        public async Task<ActionResult<IdentityUser>> ResetPassword(string id, string password)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("User Id is required"); // 400
+            }
+            if (string.IsNullOrEmpty(password))
+            {
+                return BadRequest("Password is required"); // 400
+            }
+            if (password.Length < 6)
+            {
+                return BadRequest("Password must be at least 6 characters"); // 400
+            }
+            try
+            {
+                var user = await _context.IdentityUser.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound(); // 404
+                }
+                user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, password);
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(user); // 200
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); // 400
+            }
+        }
+
+        // PUT: api/user/changePassword/id
+        [HttpPut("api/user/changePassword/{id}")]
+        public async Task<ActionResult<IdentityUser>> ChangePassword(string id, string oldPassword, string newPassword)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("User Id is required"); // 400
+            }
+            if (string.IsNullOrEmpty(oldPassword))
+            {
+                return BadRequest("Old Password is required"); // 400
+            }
+            if (string.IsNullOrEmpty(newPassword))
+            {
+                return BadRequest("New Password is required"); // 400
+            }
+            if (newPassword.Length < 6)
+            {
+                return BadRequest("Password must be at least 6 characters"); // 400
+            }
+
+            try
+            {
+                var user = await _context.IdentityUser.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound(); // 404
+                }
+                var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+                if (!result.Succeeded)
+                {
+                    return BadRequest("Invalid Old Password");
+                }
+                return Ok(user); // 200
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Password not changed"); // 400
+            }
+        }
+
+        // PUT: api/user/changeEmail/id
+        [HttpPut("api/user/changeEmail/{id}")]
+        public async Task<ActionResult<IdentityUser>> ChangeEmail(string id, string email)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("User Id is required"); // 400
+            }
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email is required"); // 400
+            }
+
+            if (await _userManager.FindByEmailAsync(email) != null)
+            {
+                return BadRequest("Email already exists");
+            }
+
+            if (email == null || !new EmailAddressAttribute().IsValid(email))
+            {
+                return BadRequest("Invalid format email"); // 400
+            }
+
+            try
+            {
+                var user = await _context.IdentityUser.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound(); // 404
+                }
+                var result = await _userManager.SetEmailAsync(user, email);
+                if (!result.Succeeded)
+                {
+                    return BadRequest("Invalid Email");
+                }
+                _userManager.NormalizeEmail(email);
+                return Ok(user); // 200
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Email not changed"); // 400
+            }
+        }
+
+        // PUT: api/user/changeUserName/id
+        [HttpPut("api/user/changeUserName/{id}")]
+        public async Task<ActionResult<IdentityUser>> ChangeUserName(string id, string userName)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("User Id is required"); // 400
+            }
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Username is required"); // 400
+            }
+
+            if (userName.Length < 6)
+            {
+                return BadRequest("Username must be at least 6 characters"); // 400
+            }
+
+            if (await _userManager.FindByNameAsync(userName) != null)
+            {
+                return BadRequest("Username already exists"); //400
+            }
+            try
+            {
+                var user = await _context.IdentityUser.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound(); // 404
+                }
+                var result = await _userManager.SetUserNameAsync(user, userName);
+                if (!result.Succeeded)
+                {
+                    return BadRequest("Invalid Username");
+                }
+                _userManager.NormalizeName(userName);
+                return Ok(user); // 200
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Username not changed"); // 400
+            }
         }
     }
 }
