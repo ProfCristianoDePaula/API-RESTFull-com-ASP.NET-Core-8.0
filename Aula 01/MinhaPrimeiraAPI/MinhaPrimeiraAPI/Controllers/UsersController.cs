@@ -11,6 +11,12 @@ namespace MinhaPrimeiraAPI.Controllers
         private readonly MyContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
+        // IUserStore e IUserEmailStore são interfaces que definem os métodos que
+        // devem ser implementados para armazenar e recuperar usuários e e-mails.
+        private IUserStore<IdentityUser> _userStore;
+        private IUserEmailStore<IdentityUser> _emailStore;
 
         public UsersController(MyContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
@@ -174,9 +180,86 @@ namespace MinhaPrimeiraAPI.Controllers
                 return BadRequest(ex.Message); // 400
             }
         }
+
+        // GET: api/users
+        [HttpGet("api/users")]
+        public async Task<ActionResult<IEnumerable<IdentityUser>>> GetUsers()
+        {
+            try
+            {
+                var users = await _context.IdentityUser.ToListAsync();
+                if (users.Count == 0)
+                {
+                    return NoContent(); // 204
+                }
+                return Ok(users); // 200
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); // 400
+            }
+        }
+
+        // PUT: api/register
+        [HttpPost("api/register")]
+        public async Task<IActionResult> RegisterUserAsync(string userName, string email, string password, string role)
+        {
+            if (ModelState.IsValid)
+            {
+                if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(role))
+                {
+                    return BadRequest("All fields are required");
+                }
+
+                if (await _userManager.FindByEmailAsync(email) != null)
+                {
+                    return BadRequest("Email already exists");
+                }
+
+                if (await _userManager.FindByNameAsync(userName) != null)
+                {
+                    return BadRequest("Username already exists");
+                }
+
+                if (string.IsNullOrEmpty(password) || password.Length < 6)
+                {
+                    return BadRequest("Password must be at least 6 characters");
+                }
+                if (string.IsNullOrEmpty(role))
+                {
+                    return BadRequest("Role is required");
+                }
+                var roleExists = await _context.IdentityRole.AnyAsync(r => r.NormalizedName == role.Trim().ToUpper());
+                if (!roleExists)
+                {
+                    return BadRequest("Role does not exist");
+                }
+
+                // Validar dados do usuário (implemente sua lógica de validação aqui)
+                var user = new IdentityUser();
+                user.UserName = userName.Trim();
+                user.Email = email.Trim();
+                await _userManager.AddToRoleAsync(user, role);
+                var result = await _userManager.CreateAsync(user, password);
+
+                if (result.Succeeded)
+                {
+                    // Adicionar o usuário ao papel
+                    return Ok(user);
+                }
+                if (result.Errors != null)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
+            }
+            return NotFound();
+        }
     }
 }
-
 
 
 
