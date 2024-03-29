@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph.Models;
 using MinhaPrimeiraAPI.Models;
+using MinhaPrimeiraAPI.Services;
 
 namespace MinhaPrimeiraAPI.Controllers
 {
@@ -9,11 +10,13 @@ namespace MinhaPrimeiraAPI.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly TokenService _tokenService;
 
-        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, TokenService tokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenService = tokenService;
         }
 
         /*
@@ -68,7 +71,8 @@ namespace MinhaPrimeiraAPI.Controllers
             // Se o Login foi bem sucedido
             if (result.Succeeded)
             {
-                return Ok(StatusCodes.Status200OK);
+                var token = await _tokenService.GenerateToken(user);
+                return Ok(new { token });
             }
             // Se o usuário está bloqueado
             if (result.IsLockedOut)
