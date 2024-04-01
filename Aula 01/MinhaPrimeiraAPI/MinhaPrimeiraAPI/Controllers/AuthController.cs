@@ -56,7 +56,7 @@ namespace MinhaPrimeiraAPI.Controllers
                 return BadRequest("Username not Found");
             }
             // Verificar se o Username está bloqueado
-            if (await _userManager.IsLockedOutAsync(user))
+            if (await _userManager.GetLockoutEnabledAsync(user))
             {
                 return BadRequest(StatusCodes.Status423Locked);
             }

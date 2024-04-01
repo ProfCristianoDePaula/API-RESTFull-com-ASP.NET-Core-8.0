@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MinhaPrimeiraAPI.Models;
 
 namespace MinhaPrimeiraAPI.Data
 {
@@ -13,6 +14,9 @@ namespace MinhaPrimeiraAPI.Data
         public DbSet<IdentityRoleClaim<string>> IdentityRoleClaim { get; set; }
         public DbSet<IdentityUserLogin<string>> IdentityUserLogin { get; set; }
 
+        public DbSet<Curso> Cursos { get; set; }
+        public DbSet<Disciplina> Disciplinas { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,7 +26,12 @@ namespace MinhaPrimeiraAPI.Data
             modelBuilder.Entity<IdentityUserClaim<string>>().HasKey(iuc => iuc.Id);
             modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(iurc => iurc.Id);
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(iul => new { iul.LoginProvider, iul.ProviderKey });
+
+            modelBuilder.Entity<Curso>().ToTable("Cursos");
+            modelBuilder.Entity<Disciplina>().ToTable("Disciplinas");
         }
+
+
     }
 }
 
